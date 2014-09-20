@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+      <title>Sebastian Pawluś</title>
+
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <meta name="description" content="" />
+      <meta name="author" content="Sebastian Pawluś" />
+
+      <link href="//fonts.googleapis.com/css?family=Mr+Bedfort&subset=latin,latin-ext" rel="stylesheet" type="text/css" />
+      <link href="//fonts.googleapis.com/css?family=Merriweather" rel="stylesheet" type="text/css" />
+      <link href="//fonts.googleapis.com/css?family=Lato:300,400,700,900,300italic,400italic,700italic,900italic" rel='stylesheet' type='text/css' />
+
+      <link href="/libs/bootstrap/css/bootstrap.css" rel="stylesheet" />
+      <link href="/libs/bootstrap/css/bootstrap-responsive.css" rel="stylesheet" />
+      <link href="/pygments.css" rel="stylesheet/less" type="text/css" />
+      <link href="/libs/main.less" rel="stylesheet/less" type="text/css" />
+
+      <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+      <![endif]-->
+
+      <script src="/libs/jquery-1.8.3.min.js"></script>
+      <script src="/libs/bootstrap/js/bootstrap.js"></script>
+      <script src="/libs/less-1.3.1.min.js"></script>
+      <script src="/libs/jquery.pjax.js"></script>
+
+      <script src="/libs/main.js"></script>
+
+  </head>
+
+  <body>
+
+    <div class="container">
+      <div class="navbar">
+	<div class="navbar-inner">
+	  <a class="brand" href="/">X_O</a>
+	  <ul class="nav pull-right">
+	    <li><a href="/rss.xml">rss</a></li>
+	    <li><a href="/about.html">about</a></li>
+	    <li><a class="github" target="_blank" href="https://github.com/xando"></a></li>
+	  </ul>
+	</div>
+      </div>
+    </div>
+
+    <div id="the-text" class="container content">
+      
+<i>02-05-2013</i>
+
+<h1>Virtualenv in Python and how I roll!</h1>
+<p>A few words about Virtualenv in Python. It's a simple approach to
+isolate your python development environment from other development
+environments, and, equally importantly, from your global Python
+packages. If you're using any Unix based system (this includes any
+Linux and MacOS system) you have Python installed and most in cases
+you will have other packages installed with it as well. Virtualenv
+will prevent packages being imported if you haven't installed them for
+your project, it will keep your different versions of the same package
+separate, and allows you to freeze the project state and send this to
+your team member who can then recreate the environment seamlessly.</p>
+<p>Virtualenv comes with nice extension called virtualenvwrapper which
+will give you a lot of useful commands. So let's get it working.</p>
+<div class="codehilite"><pre><span class="nv">$ </span>sudo pip install virtualenv virtualenvwrapper
+
+<span class="c"># or</span>
+
+<span class="nv">$ </span>sudo easy_install virtualenv virtualenvwrapper
+</pre></div>
+
+
+<p>and then append this line to  your ~/.bashrc or ~/.zshrc.</p>
+<div class="codehilite"><pre><span class="o">[[</span> -e /usr/local/bin/virtualenvwrapper.sh <span class="o">]]</span> <span class="o">&amp;&amp;</span> <span class="nb">source</span> /usr/local/bin/virtualenvwrapper.sh
+</pre></div>
+
+
+<p>You are ready to go, your virtualenv is set up and ready.  You can
+read more about the details
+<a href="http://virtualenv.readthedocs.org">http://virtualenv.readthedocs.org</a>
+and
+<a href="http://virtualenvwrapper.readthedocs.org">http://virtualenvwrapper.readthedocs.org</a></p>
+<h2>How I roll</h2>
+<div class="codehilite"><pre>upsearch<span class="o">()</span> <span class="o">{</span>
+    <span class="nb">test</span> / <span class="o">==</span> <span class="s2">&quot;$PWD&quot;</span> <span class="o">&amp;&amp;</span> <span class="k">return</span> <span class="o">||</span> <span class="se">\</span>
+        <span class="nb">test</span> -f <span class="s2">&quot;$1&quot;</span> <span class="o">&amp;&amp;</span> <span class="nb">echo</span> <span class="s2">&quot;$PWD/$1&quot;</span> <span class="o">&amp;&amp;</span> <span class="k">return</span> <span class="o">||</span> <span class="se">\</span>
+        <span class="nb">cd</span> .. <span class="o">&amp;&amp;</span> upsearch <span class="s2">&quot;$1&quot;</span>
+<span class="o">}</span>
+
+has_virtualenv<span class="o">()</span> <span class="o">{</span>
+    <span class="nv">VIRTUALENV_FILE</span><span class="o">=</span><span class="sb">`</span>upsearch .virtualenv<span class="sb">`</span>
+    <span class="k">if</span> <span class="o">[</span> <span class="nv">$VIRTUALENV_FILE</span> <span class="o">]</span>
+    <span class="k">then</span>
+<span class="k">        </span><span class="nv">VIRTUALENV_NAME</span><span class="o">=</span><span class="k">$(</span>cat <span class="nv">$VIRTUALENV_FILE</span><span class="k">)</span>
+        <span class="k">if</span> <span class="o">[</span> -d <span class="s2">&quot;$WORKON_HOME/$VIRTUALENV_NAME&quot;</span> <span class="o">]</span>; <span class="k">then</span>
+<span class="k">            if</span> <span class="o">[</span> -z <span class="nv">$VIRTUAL_ENV</span> <span class="o">]</span> <span class="o">||</span> <span class="o">[</span> <span class="nv">$VIRTUAL_ENV</span> -a <span class="k">$(</span>basename <span class="s2">&quot;$VIRTUAL_ENV&quot;</span><span class="k">)</span> !<span class="o">=</span> <span class="nv">$VIRTUALENV_NAME</span> <span class="o">]</span>; <span class="k">then</span>
+<span class="k">                </span>workon <span class="nv">$VIRTUALENV_NAME</span>
+            <span class="k">fi</span>
+<span class="k">        else</span>
+<span class="k">            </span><span class="nv">VIRTUALENV_REQUIREMENTS</span><span class="o">=</span><span class="s2">&quot;$PWD/requirements.txt&quot;</span>
+            <span class="k">if</span> <span class="o">[</span> -f <span class="nv">$VIRTUALENV_REQUIREMENTS</span> <span class="o">]</span>; <span class="k">then</span>
+<span class="k">                </span>mkvirtualenv <span class="nv">$VIRTUALENV_NAME</span> -r <span class="nv">$VIRTUALENV_REQUIREMENTS</span>
+            <span class="k">else</span>
+<span class="k">                </span>mkvirtualenv <span class="nv">$VIRTUALENV_NAME</span>
+            <span class="k">fi</span>
+<span class="k">            </span><span class="nv">site_packages</span><span class="o">=</span><span class="s2">&quot;`virtualenvwrapper_get_site_packages_dir`&quot;</span>
+            ln -s <span class="sb">`</span>virtualenvwrapper_get_site_packages_dir<span class="sb">`</span> <span class="s2">&quot;$PWD/.site-packages&quot;</span>
+        <span class="k">fi</span>
+<span class="k">    else</span>
+<span class="k">        if</span> <span class="o">[</span> <span class="nv">$VIRTUAL_ENV</span> <span class="o">]</span>; <span class="k">then</span>
+<span class="k">            </span>deactivate
+        <span class="k">fi</span>
+<span class="k">    fi</span>
+<span class="o">}</span>
+
+<span class="k">function </span>venv_cd <span class="o">()</span> <span class="o">{</span>
+    <span class="nb">builtin cd</span> <span class="nv">$@</span> <span class="o">&amp;&amp;</span> has_virtualenv
+<span class="o">}</span>
+
+<span class="nb">alias cd</span><span class="o">=</span><span class="s2">&quot;venv_cd&quot;</span>
+</pre></div>
+
+
+<p>This is a part of my <strong>~/.zshrc</strong>, but it should work with
+<strong>~/.bashrc</strong> as well. Also plese note that
+<strong>/usr/local/bin/virtualenvwrapper.sh</strong> in your case maybe located
+somewhere else.</p>
+<p>If Bash is all Greek to you, here's your plain English guide to the
+code above. The very last line is responsible for overwriting the
+<strong>cd</strong> command in your shell.  Every single time you try to change
+your current directory the function has_virtualenv will be executed.
+The function will try to do upsearch for the .virtualenv file. Let's
+say that you right now:</p>
+<div class="codehilite"><pre>/home/user/mystuff/projects/AllTheThings/
+</pre></div>
+
+
+<p>The upsearch function will try to locate the .virtualenv file and read
+its content, which is a single, simple line saying which virtualenv to
+launch. The current location and all parent locations will be
+searched.</p>
+<div class="codehilite"><pre>/home/user/mystuff/projects/AllTheThings/.virtualenv
+/home/user/mystuff/projects/.virtualenv
+/home/user/mystuff/.virtualenv
+/home/user/.virtualenv
+/home/.virtualenv
+/.virtualenv
+</pre></div>
+
+
+<p>If the file is located, virtualenv will be launched. But why read all
+parent locations?  Well, maybe all parent locations is a bit too much,
+but nevertheless I'm reading parent locations, because sometimes
+projects are decoupled into smaller units.  Your virtualenv can be
+overwritten on different levels, and sometimes it happens that when
+using <b>cd</b> you will jump to a directory deeper than the main one,
+and you will miss the .virtualenv file.</p>
+<p>The next things that will happen are: if a virtualenv environment with
+a name matching the content of the first found .virtualenv already
+exists, it will simply switch to this one.  If not, a new one will be
+created and, if you have defined requirements.txt file , this file
+will be picked up as well and all requirements stored there will be
+installed to the new virtualenv.  If the new virtualenv has been
+created, the symlink to <strong>site-packages</strong> will be created as well.</p>
+<p>The last thing worth mentioning is that when you leave the range of
+upsearch, virtualenv will be deactivated, which means that you're not
+going to drag it to different projects or locations in your system.</p>
+
+
+    </div>
+
+
+    <footer class="container">
+      2014, powered by <a target="_blank" href="http://buzzy.xando.org/">buzzy</a> and good intentions
+    </footer>
+
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-11337039-10', 'xando.org');
+      ga('send', 'pageview');
+    </script>
+
+  </body>
+</html>

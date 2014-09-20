@@ -1,0 +1,116 @@
+body {
+    overflow-y: scroll;
+    font-family: 'Merriweather', serif;
+    font-size: 1em;
+    color: #444;
+    text-align:justify;
+
+    @media (max-width: 767px) {
+		h1 {
+			font-size: 1.2em;
+		}
+		p {
+			font-size: 0.9em;
+		}
+    }
+
+	footer {
+		padding: 10px;
+		margin: 50px auto 10px;
+		text-align: center;
+		font-size: 10px;
+		border: 0;
+		border-top: 1px solid #eeeeee;
+		border-bottom: 1px solid #ffffff;
+	}
+
+    .navbar {
+		.navbar-inner {
+			border: none;
+			border-bottom: 2px solid;
+			border-radius: 0;
+			background: none;
+			box-shadow: none;
+			padding-right: 10px;
+		}
+		a {
+			color: black !important;
+			padding: 16px 15px 10px !important;
+		}
+		.brand {
+			margin-left: -31px;
+			margin-top: 5px;
+			font-family: 'Mr Bedfort', cursive;
+			font-size: 1.7em;
+			color: black;
+		}
+		.github {
+			margin-top: 10px;
+			background: url('../img/github_icon.png') no-repeat;
+			height: 15px;
+		}
+	}
+
+	h1, h2, h3, h4, h5 {
+		font-family: 'Lato', sans-serif !important;
+	}
+
+    h1 {
+		margin: 30px 0 5px;
+		font-weight: bold;
+		line-height: 1;
+		color: black;
+		text-rendering: optimizelegibility;
+		a {
+			text-decoration: none;
+			color: #333
+		}
+		a:hover {
+			text-decoration: none;
+			color: #888
+		}
+    }
+
+	i {
+		color: #CCC;
+	}
+
+    h2 {
+		margin: 35px 0 15px;
+		font-size: 1.8em;
+    }
+
+    div.break {
+		text-align: center;
+		font-size: 1.8em;
+    }
+
+    img {
+		box-sizing:border-box;
+		display: block;
+		margin: 20px auto;
+    }
+
+    p {
+		margin: 15px 0 20px 0;
+
+		a {
+			font-weight: bold;
+			text-decoration: none;
+		}
+
+		a.github:before {
+			content:" ";
+			display: inline-block;
+			background: url('img/github_icon.png') no-repeat;
+			background-size: 1.6em 1.6em;
+			width: 1.7em;
+			height: 2em;
+			vertical-align: -10px;
+		}
+    }
+
+    code {
+		font-size: 1.05em;
+    }
+}

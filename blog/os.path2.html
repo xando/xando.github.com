@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+      <title>Sebastian Pawluś</title>
+
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <meta name="description" content="" />
+      <meta name="author" content="Sebastian Pawluś" />
+
+      <link href="//fonts.googleapis.com/css?family=Mr+Bedfort&subset=latin,latin-ext" rel="stylesheet" type="text/css" />
+      <link href="//fonts.googleapis.com/css?family=Merriweather" rel="stylesheet" type="text/css" />
+      <link href="//fonts.googleapis.com/css?family=Lato:300,400,700,900,300italic,400italic,700italic,900italic" rel='stylesheet' type='text/css' />
+
+      <link href="/libs/bootstrap/css/bootstrap.css" rel="stylesheet" />
+      <link href="/libs/bootstrap/css/bootstrap-responsive.css" rel="stylesheet" />
+      <link href="/pygments.css" rel="stylesheet/less" type="text/css" />
+      <link href="/libs/main.less" rel="stylesheet/less" type="text/css" />
+
+      <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+      <![endif]-->
+
+      <script src="/libs/jquery-1.8.3.min.js"></script>
+      <script src="/libs/bootstrap/js/bootstrap.js"></script>
+      <script src="/libs/less-1.3.1.min.js"></script>
+      <script src="/libs/jquery.pjax.js"></script>
+
+      <script src="/libs/main.js"></script>
+
+  </head>
+
+  <body>
+
+    <div class="container">
+      <div class="navbar">
+	<div class="navbar-inner">
+	  <a class="brand" href="/">X_O</a>
+	  <ul class="nav pull-right">
+	    <li><a href="/rss.xml">rss</a></li>
+	    <li><a href="/about.html">about</a></li>
+	    <li><a class="github" target="_blank" href="https://github.com/xando"></a></li>
+	  </ul>
+	</div>
+      </div>
+    </div>
+
+    <div id="the-text" class="container content">
+      
+<i>01-12-2013</i>
+
+<h1>from os import path2</h1>
+<p>There are a few things that are a bit annoying in the <strong>os</strong> module inside the Python standard library. For me, one of the biggest bugbears is the <strong>os.path</strong> module, and path handling within this. Python, as an object oriented language, has this really cool idea that everything is an object; even class definition and functions are objects. So how come the path module is different?</p>
+<p>Well, path is an object as well, but it's a string object, not a <strong>path</strong> object. Since it is really easy to observe that files and directories have something to say about themselves by design, and that what they say is more than a string object can carry, I decided to write a simple alternative.</p>
+<h2>the thing</h2>
+<p>Python is often compared with Ruby, so let's have a look at how things are done there in 
+<a href="http://www.ruby-doc.org/stdlib-1.9.3/libdoc/pathname/rdoc/Pathname.html">Pathname</a>. Whether or not you are a Ruby fan, I think we can say that the <strong>Pathname</strong> API is pretty good. Following a few ideas borrowed Ruby, I decided to propose something on this subject and create my own path implementation. As a result, I created a Python package and called it <a href="http://ospath2.xando.org/">os.path2</a>, which would be the new version of <strong>os.path</strong> with a ‘more’ object oriented approach to path handling in Python.</p>
+<p>Below are a few examples of what is possible with the package.</p>
+<div class="codehilite"><pre><span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">path2</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="n">path2</span><span class="p">(</span><span class="s">&#39;/var/log&#39;</span><span class="p">)</span>
+<span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">log</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="n">path2</span><span class="p">(</span><span class="s">&#39;/var&#39;</span><span class="p">,</span> <span class="s">&#39;log&#39;</span><span class="p">)</span>
+<span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">log</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="n">path2</span><span class="p">(</span><span class="s">&#39;/var/log/syslog&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">a_time</span>
+<span class="mf">1358549788.7512302</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="n">path2</span><span class="p">(</span><span class="s">&#39;/home/you/file&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">user</span>
+<span class="s">&#39;you&#39;</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="n">path2</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">mod</span>
+<span class="s">&#39;0775&#39;</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="p">[(</span><span class="n">element</span><span class="o">.</span><span class="n">user</span><span class="p">,</span> <span class="n">element</span><span class="o">.</span><span class="n">group</span><span class="p">,</span> <span class="n">element</span><span class="o">.</span><span class="n">mod</span><span class="p">)</span> <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">path2</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">)]</span>
+<span class="p">[(</span><span class="s">&#39;user&#39;</span><span class="p">,</span> <span class="s">&#39;user&#39;</span><span class="p">,</span> <span class="s">&#39;0664&#39;</span><span class="p">),</span>
+ <span class="p">(</span><span class="s">&#39;user&#39;</span><span class="p">,</span> <span class="s">&#39;user&#39;</span><span class="p">,</span> <span class="s">&#39;0664&#39;</span><span class="p">),</span>
+ <span class="p">(</span><span class="s">&#39;user&#39;</span><span class="p">,</span> <span class="s">&#39;user&#39;</span><span class="p">,</span> <span class="s">&#39;0664&#39;</span><span class="p">),</span>
+ <span class="p">(</span><span class="s">&#39;user&#39;</span><span class="p">,</span> <span class="s">&#39;user&#39;</span><span class="p">,</span> <span class="s">&#39;0664&#39;</span><span class="p">),</span>
+ <span class="p">(</span><span class="s">&#39;user&#39;</span><span class="p">,</span> <span class="s">&#39;user&#39;</span><span class="p">,</span> <span class="s">&#39;0664&#39;</span><span class="p">),</span>
+ <span class="p">(</span><span class="s">&#39;user&#39;</span><span class="p">,</span> <span class="s">&#39;user&#39;</span><span class="p">,</span> <span class="s">&#39;0664&#39;</span><span class="p">),</span>
+ <span class="p">(</span><span class="s">&#39;user&#39;</span><span class="p">,</span> <span class="s">&#39;user&#39;</span><span class="p">,</span> <span class="s">&#39;0664&#39;</span><span class="p">),</span>
+ <span class="p">(</span><span class="s">&#39;user&#39;</span><span class="p">,</span> <span class="s">&#39;user&#39;</span><span class="p">,</span> <span class="s">&#39;0775&#39;</span><span class="p">),</span>
+ <span class="p">(</span><span class="s">&#39;user&#39;</span><span class="p">,</span> <span class="s">&#39;user&#39;</span><span class="p">,</span> <span class="s">&#39;0664&#39;</span><span class="p">)]</span>
+</pre></div>
+
+
+<p>The <strong>path2</strong> object is also an instance of basestring, so all methods implemented for 
+<a href="http://docs.python.org/2/library/stdtypes.html#string-methods">string/unicode</a> 
+will work here as well.</p>
+<div class="codehilite"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">path2</span><span class="p">(</span><span class="s">&#39;/home/user/Projects/os.path2&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;/&#39;</span><span class="p">)</span>
+<span class="p">[</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="s">&#39;home&#39;</span><span class="p">,</span> <span class="s">&#39;user&#39;</span><span class="p">,</span> <span class="s">&#39;Projects&#39;</span><span class="p">,</span> <span class="s">&#39;os.path2&#39;</span><span class="p">]</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="n">path2</span><span class="p">(</span><span class="s">&#39;/home/user/test_tmp_directory&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="p">,</span> <span class="s">&#39;-&#39;</span><span class="p">)</span>
+<span class="s">&#39;/home/user/test-tmp-directory&#39;</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="n">location</span> <span class="o">=</span> <span class="n">path2</span><span class="p">(</span><span class="s">&#39;/home/user/test_tmp_directory&#39;</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">location</span><span class="o">.</span><span class="n">mv</span><span class="p">(</span><span class="n">location</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="p">,</span> <span class="s">&#39;-&#39;</span><span class="p">))</span>
+</pre></div>
+
+
+<p>If you are interested, give it a go. 
+The full API description if available <a href="http://ospath2.xando.org/en/latest/">here</a>. 
+The code is on <a href="http://ospath2.xando.org/">github</a>. 
+The package is available in the usual way, from PyPi.</p>
+<div class="codehilite"><pre><span class="nv">$ </span>pip install os.path2
+</pre></div>
+
+
+<h2>Alternatives</h2>
+<p>This idea is not new. Even though I really like my implementation, I need to be honest here and suggest a few other <strong>path</strong> projects that were created a bit earlier than mine and have broadly similar approaches to solving the path problem:</p>
+<ul>
+<li><a href="https://github.com/jaraco/path.py">path.py</a> by Jason R. Coombs,</li>
+<li><a href="https://github.com/mikeorr/Unipath">Unipath</a> by Mike Orr.</li>
+</ul>
+<p>And there are actually two PEPs about it as well:</p>
+<ul>
+<li><a href="http://www.python.org/dev/peps/pep-0355/">PEP 355</a> (2006 rejected), </li>
+<li><a href="http://www.python.org/dev/peps/pep-0428/">PEP 428</a> (2012 draft).</li>
+</ul>
+
+
+    </div>
+
+
+    <footer class="container">
+      2014, powered by <a target="_blank" href="http://buzzy.xando.org/">buzzy</a> and good intentions
+    </footer>
+
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-11337039-10', 'xando.org');
+      ga('send', 'pageview');
+    </script>
+
+  </body>
+</html>
